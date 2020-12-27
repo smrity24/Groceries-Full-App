@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:groceries_app/screens/verification_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-class SignIn extends StatelessWidget {
-  bool _icon = false;
+class SignIn extends StatefulWidget {
+  @override
+  _SignInState createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  String _phoneNumber = "";
+  TextEditingController _numberController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +38,20 @@ class SignIn extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     IntlPhoneField(
-                      decoration: InputDecoration(),
+                      controller: _numberController,
+                      decoration: InputDecoration(
+                        suffixIcon: _phoneNumber.isNotEmpty
+                            ? IconButton(
+                                icon: Image.asset('assets/images/forward.png'),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              VerificationScreen()));
+                                })
+                            : null,
+                      ),
                       initialCountryCode: 'BD',
                       onChanged: (phone) {
                         print(phone.completeNumber);
@@ -112,5 +132,16 @@ class SignIn extends StatelessWidget {
         ],
       )),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _numberController = TextEditingController();
+    _numberController.addListener(() {
+      setState(() {
+        _phoneNumber = _numberController.text;
+      });
+    });
   }
 }
